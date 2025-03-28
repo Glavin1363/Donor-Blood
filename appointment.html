@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DonorConnect - Blood Donation Scheduler</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e63946;
+            --primary-dark: #c1121f;
+            --secondary: #f1faee;
+            --dark: #1d3557;
+            --light: #a8dadc;
+            --success: #2a9d8f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: white;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary);
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .schedule-form {
+            flex: 1;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .schedule-form h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .calendar-container {
+            margin-top: 20px;
+        }
+
+        #calendar {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .appointments {
+            flex: 1;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .appointments h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .appointment-list {
+            list-style: none;
+        }
+
+        .appointment-item {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .appointment-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .appointment-item h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .appointment-item p {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .appointment-item .badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .no-appointments {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+
+        .delete-btn {
+            background-color: #ffebee;
+            color: var(--primary);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .map-container {
+            height: 200px;
+            background-color: #eee;
+            border-radius: 8px;
+            margin-top: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ddd;
+            color: #666;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--light);
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>DonorConnect</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Schedule Your Blood Donation</h1>
+            <p>Book an appointment at a nearby blood bank or hospital to donate blood and save lives. Reduce wait times and help medical facilities plan better.</p>
+            <a href="#schedule" class="btn">Schedule Now</a>
+        </div>
+    </section>
+
+    <div class="container">
+        <div id="schedule" class="main-content">
+            <div class="schedule-form">
+                <h2><i class="fas fa-calendar-alt"></i> Book Your Donation</h2>
+                
+                <div id="successMessage" class="success-message">
+                    <i class="fas fa-check-circle"></i> Your appointment has been scheduled successfully!
+                </div>
+
+                <form id="donationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bloodType">Blood Type</label>
+                            <select id="bloodType" class="form-control" required>
+                                <option value="">Select your blood type</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Select Location</label>
+                        <select id="location" class="form-control" required>
+                            <option value="">Select a blood bank or hospital</option>
+                            <option value="XYZ Blood Bank, Downtown">XYZ Blood Bank, Downtown</option>
+                            <option value="City General Hospital">City General Hospital</option>
+                            <option value="Community Blood Center">Community Blood Center</option>
+                            <option value="Regional Medical Center">Regional Medical Center</option>
+                            <option value="LifeSavers Blood Donation">LifeSavers Blood Donation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Donation Type</label>
+                        <div style="display: flex; gap: 15px;">
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="radio" name="donationType" value="Whole Blood" checked> Whole Blood
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="radio" name="donationType" value="Plasma"> Plasma
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="radio" name="donationType" value="Platelets"> Platelets
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointmentDate">Appointment Date & Time</label>
+                        <div class="calendar-container">
+                            <input type="datetime-local" id="appointmentDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (Optional)</label>
+                        <textarea id="notes" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Schedule Appointment</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="appointments">
+                <h2><i class="fas fa-list-ul"></i> Your Appointments</h2>
+                <ul class="appointment-list" id="appointmentList">
+                    <!-- Appointments will be dynamically added here -->
+                </ul>
+                <div id="noAppointments" class="no-appointments">
+                    <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 15px; color: #ccc;"></i>
+                    <p>You don't have any scheduled appointments yet.</p>
+                    <p>Schedule your first donation above!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2023 DonorConnect. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved appointments from localStorage
+            loadAppointments();
+
+            // Form submission handler
+            document.getElementById('donationForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const bloodType = document.getElementById('bloodType').value;
+                const location = document.getElementById('location').value;
+                const donationType = document.querySelector('input[name="donationType"]:checked').value;
+                const appointmentDate = document.getElementById('appointmentDate').value;
+                const notes = document.getElementById('notes').value;
+                
+                // Create appointment object
+                const appointment = {
+                    id: Date.now(), // Unique ID based on timestamp
+                    fullName,
+                    email,
+                    phone,
+                    bloodType,
+                    location,
+                    donationType,
+                    appointmentDate,
+                    notes,
+                    status: 'Scheduled'
+                };
+                
+                // Save to localStorage
+                saveAppointment(appointment);
+                
+                // Show success message
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+                
+                // Reset form
+                this.reset();
+                
+                // Reload appointments to show the new one
+                loadAppointments();
+            });
+            
+            // Function to save appointment to localStorage
+            function saveAppointment(appointment) {
+                let appointments = JSON.parse(localStorage.getItem('bloodDonationAppointments')) || [];
+                appointments.push(appointment);
+                localStorage.setItem('bloodDonationAppointments', JSON.stringify(appointments));
+            }
+            
+            // Function to load appointments from localStorage
+            function loadAppointments() {
+                const appointments = JSON.parse(localStorage.getItem('bloodDonationAppointments')) || [];
+                const appointmentList = document.getElementById('appointmentList');
+                const noAppointments = document.getElementById('noAppointments');
+                
+                // Clear current list
+                appointmentList.innerHTML = '';
+                
+                if (appointments.length === 0) {
+                    noAppointments.style.display = 'block';
+                } else {
+                    noAppointments.style.display = 'none';
+                    
+                    // Sort appointments by date (newest first)
+                    appointments.sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate));
+                    
+                    // Add each appointment to the list
+                    appointments.forEach(appointment => {
+                        const date = new Date(appointment.appointmentDate);
+                        const formattedDate = date.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        
+                        const listItem = document.createElement('li');
+                        listItem.className = 'appointment-item';
+                        listItem.innerHTML = `
+                            <h3>${appointment.location}</h3>
+                            <p><strong>Date:</strong> ${formattedDate}</p>
+                            <p><strong>Donation Type:</strong> ${appointment.donationType}</p>
+                            <p><strong>Blood Type:</strong> ${appointment.bloodType}</p>
+                            ${appointment.notes ? `<p><strong>Notes:</strong> ${appointment.notes}</p>` : ''}
+                            <span class="badge">${appointment.status}</span>
+                            <button class="delete-btn" data-id="${appointment.id}">
+                                <i class="fas fa-trash-alt"></i> Cancel Appointment
+                            </button>
+                        `;
+                        
+                        appointmentList.appendChild(listItem);
+                    });
+                    
+                    // Add event listeners to delete buttons
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const id = parseInt(this.getAttribute('data-id'));
+                            deleteAppointment(id);
+                        });
+                    });
+                }
+            }
+            
+            // Function to delete an appointment
+            function deleteAppointment(id) {
+                let appointments = JSON.parse(localStorage.getItem('bloodDonationAppointments')) || [];
+                appointments = appointments.filter(appointment => appointment.id !== id);
+                localStorage.setItem('bloodDonationAppointments', JSON.stringify(appointments));
+                loadAppointments();
+            }
+            
+            // Set minimum date to today
+            const today = new Date();
+            const minDate = today.toISOString().slice(0, 16);
+            document.getElementById('appointmentDate').min = minDate;
+            
+            // Set default time to next available hour
+            const nextHour = new Date(today);
+            nextHour.setHours(today.getHours() + 1, 0, 0, 0);
+            document.getElementById('appointmentDate').valueAsNumber = nextHour.getTime();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | DonorConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .registration-container {
+            max-width: 900px;
+            margin: 100px auto;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .registration-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .registration-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .registration-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 15px;
+            position: relative;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 10px;
+            z-index: 2;
+        }
+        
+        .step.active .step-number {
+            background-color: var(--dark-color);
+            color: var(--white);
+        }
+        
+        .step.completed .step-number {
+            background-color: var(--success-color);
+            color: var(--white);
+        }
+        
+        .step-title {
+            font-size: 0.9rem;
+            color: var(--white);
+            opacity: 0.8;
+        }
+        
+        .step.active .step-title {
+            opacity: 1;
+            font-weight: 500;
+        }
+        
+        .step.completed .step-title {
+            opacity: 1;
+        }
+        
+        .step-connector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: 1;
+        }
+        
+        .step:first-child .step-connector {
+            width: 50%;
+            left: auto;
+            right: 0;
+        }
+        
+        .step:last-child .step-connector {
+            width: 50%;
+            left: 0;
+        }
+        
+        .step.completed .step-connector {
+            background-color: var(--success-color);
+        }
+        
+        .registration-body {
+            padding: 30px;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input {
+            margin-right: 8px;
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .btn-back {
+            background-color: var(--gray-color);
+            color: var(--white);
+        }
+        
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+        
+        .user-type-selection {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .user-type-card {
+            width: 200px;
+            padding: 30px 20px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-type-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .user-type-card.selected {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+                
+        .user-type-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+        }
+        
+        .user-type-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .user-type-card h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .user-type-card p {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .health-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .registration-container {
+                margin: 80px auto;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .user-type-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .health-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="DonorConnect Logo">
+                <span>DonorConnect</span>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="register.html" class="active">Register</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1>Join DonorConnect</h1>
+            <p>Register as a donor or recipient to start saving lives today</p>
+            <div class="registration-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-connector"></div>
+                    <div class="step-title">Account Type</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-connector"></div>
+                    <div class="step-title">Personal Details</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-connector"></div>
+                    <div class="step-title">Health Information</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-connector"></div>
+                    <div class="step-title">Complete</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="registration-body">
+            <form id="registration-form">
+                <!-- Step 1: Account Type -->
+                <div class="form-step active" data-step="1">
+                    <h2>Select Your Account Type</h2>
+                    <p>Choose whether you want to register as a donor or as someone looking for donors</p>
+                    <div class="user-type-selection">
+                        <div class="user-type-card" data-type="donor">
+                            <div class="user-type-icon">
+                                <img src="images/donor-icon.png" alt="Donor">
+                            </div>
+                            <h3>I'm a Donor</h3>
+                            <p>Register to donate blood or organs to those in need</p>
+                        </div>
+                        <div class="user-type-card" data-type="recipient">
+                            <div class="user-type-icon">
+                                <img src="images/recipient-icon.png" alt="Recipient">
+                            </div>
+                            <h3>I Need a Donor</h3>
+                            <p>Register to find compatible blood or organ donors</p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="user-type" name="user-type" value="">
+                    <div class="form-footer">
+                        <div></div>
+                        <button type="button" class="btn btn-primary btn-next" data-next="2">Next</button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Personal Details -->
+                <div class="form-step" data-step="2">
+                    <h2>Personal Information</h2>
+                    <p>Please provide your basic personal details</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first-name">First Name</label>
+                            <input type="text" id="first-name" name="first-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last-name">Last Name</label>
+                            <input type="text" id="last-name" name="last-name" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirm-password" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="male" name="gender" value="male" required>
+                                    <label for="male">Male</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="female" name="gender" value="female">
+                                    <label for="female">Female</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="other" name="gender" value="other">
+                                    <label for="other">Other</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" id="address" name="address" class="form-control" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="zip">ZIP Code</label>
+                            <input type="text" id="zip" name="zip" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-back btn-prev" data-prev="1">Back</button>
+                        <button type="button" class="btn btn-primary btn-next" data-next="3">Next</button>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Health Information -->
+                <div class="form-step" data-step="3">
+                    <h2>Health Information</h2>
+                    <p>Please provide your health details for better matching</p>
+                    <div class="health-details-grid">
+                        <div class="form-group">
+                            <label for="blood-group">Blood Group</label>
+                            <select id="blood-group" name="blood-group" class="form-control" required>
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" name="height" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" name="weight" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="medical-history">Medical History</label>
+                            <textarea id="medical-history" name="medical-history" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Are you willing to donate organs?</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="organ-donor-yes" name="organ-donor" value="yes">
+                                <label for="organ-donor-yes">Yes</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="organ-donor-no" name="organ-donor" value="no">
+                                <label for="organ-donor-no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="organ-donation-details" style="display: none;">
+                        <div class="form-group">
+                            <label>Which organs are you willing to donate?</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-kidney" name="organs[]" value="kidney">
+                                    <label for="organ-kidney">Kidney</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-liver" name="organs[]" value="liver">
+                                    <label for="organ-liver">Liver</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-heart" name="organs[]" value="heart">
+                                    <label for="organ-heart">Heart</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-lungs" name="organs[]" value="lungs">
+                                    <label for="organ-lungs">Lungs</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-pancreas" name="organs[]" value="pancreas">
+                                    <label for="organ-pancreas">Pancreas</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="organ-eyes" name="organs[]" value="eyes">
+                                    <label for="organ-eyes">Eyes</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="organ-donation-consent">I understand and consent to organ donation</label>
+                            <input type="checkbox" id="organ-donation-consent" name="organ-donation-consent" required>
+                        </div>
+                    </div>
+                    <div class="form-footer">
+                        <button type="button" class="btn btn-back btn-prev" data-prev="2">Back</button>
+                        <button type="button" class="btn btn-primary btn-next" data-next="4">Next</button>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Complete Registration -->
+                <div class="form-step" data-step="4">
+                    <div style="text-align: center; padding: 30px 0;">
+                        <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--success-color); margin-bottom: 20px;"></i>
+                        <h2>Registration Complete!</h2>
+                        <p>Thank you for joining DonorConnect. Your account has been successfully created.</p>
+                        <p>We've sent a verification link to your email address. Please verify your email to activate your account.</p>
+                        <div style="margin-top: 30px;">
+                            <button type="button" id="complete-registration" class="btn btn-primary" style="padding: 12px 30px;">Complete Registration</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <img src="images/logo.png" alt="DonorConnect Logo">
+                        <span>DonorConnect</span>
+                    </div>
+                    <p>Connecting blood and organ donors with recipients to save lives through secure and efficient technology.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="login.html">Login</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blood Donation Guide</a></li>
+                        <li><a href="#">Organ Donation FAQs</a></li>
+                        <li><a href="#">Eligibility Criteria</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Health Street, Mumbai, India</li>
+                        <li><i class="fas fa-phone"></i> +91 9876543210</li>
+                        <li><i class="fas fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8c1c6cec7e8ccc7c6c7dacbc7c6c6cdcbdc86c7dacf">[email&#160;protected]</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2023 DonorConnect. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registrationForm = document.getElementById('registration-form');
+            const completeButton = document.getElementById('complete-registration');
+
+            completeButton.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const userData = {
+                    userType: document.getElementById('user-type').value,
+                    firstName: document.getElementById('first-name').value,
+                    lastName: document.getElementById('last-name').value,
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value,
+                    password: document.getElementById('password').value.trim(),
+                    dob: document.getElementById('dob').value,
+                    gender: document.querySelector('input[name="gender"]:checked')?.value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zip: document.getElementById('zip').value,
+                    bloodGroup: document.getElementById('blood-group').value,
+                    height: document.getElementById('height').value || null,
+                    weight: document.getElementById('weight').value || null,
+                    medicalHistory: document.getElementById('medical-history').value || '',
+                    organDonor: document.getElementById('organ-donor-yes').checked,
+                    organs: Array.from(document.querySelectorAll('input[name="organs[]"]:checked')).map(org => org.value),
+                    donationHistory: [],
+                    upcomingDonations: [],
+                    donations: 0,
+                    livesSaved: 0
+                };
+
+                const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+                if (existingUsers.some(user => user.email.toLowerCase() === userData.email.toLowerCase())) {
+                    alert('This email is already registered. Please use a different email or log in.');
+                    return;
+                }
+
+                existingUsers.push(userData);
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+                sessionStorage.setItem('currentUser', JSON.stringify(userData));
+                sessionStorage.setItem('isLoggedIn', 'true');
+
+                // Debug: Log stored data
+                console.log('Registered User:', userData);
+                console.log('All Users:', JSON.parse(localStorage.getItem('users')));
+
+                // Redirect to dashboard page
+                window.location.href = 'dashboard.html';
+            });
+
+            const userTypeCards = document.querySelectorAll('.user-type-card');
+            const userTypeInput = document.getElementById('user-type');
+
+            userTypeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    console.log('Card clicked:', this.getAttribute('data-type'));
+                    userTypeCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    userTypeInput.value = this.getAttribute('data-type');
+                    console.log('Selected account type:', userTypeInput.value);
+                });
+            });
+            
+            // Organ donation toggle
+            const organDonorYes = document.getElementById('organ-donor-yes');
+            const organDonorNo = document.getElementById('organ-donor-no');
+            const organDonationDetails = document.getElementById('organ-donation-details');
+            
+            organDonorYes.addEventListener('change', function() {
+                if (this.checked) {
+                    organDonationDetails.style.display = 'block';
+                }
+            });
+            
+            organDonorNo.addEventListener('change', function() {
+                if (this.checked) {
+                    organDonationDetails.style.display = 'none';
+                }
+            });
+            
+            // Form navigation
+            const formSteps = document.querySelectorAll('.form-step');
+            const nextButtons = document.querySelectorAll('.btn-next');
+            const prevButtons = document.querySelectorAll('.btn-prev');
+            const steps = document.querySelectorAll('.step');
+            
+            function goToStep(stepNumber) {
+                formSteps.forEach(step => {
+                    if (step.getAttribute('data-step') === stepNumber.toString()) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+                
+                steps.forEach(step => {
+                    if (parseInt(step.getAttribute('data-step')) < parseInt(stepNumber)) {
+                        step.classList.add('completed');
+                        step.classList.remove('active');
+                    } else if (parseInt(step.getAttribute('data-step')) === parseInt(stepNumber)) {
+                        step.classList.add('active');
+                        step.classList.remove('completed');
+                    } else {
+                        step.classList.remove('active', 'completed');
+                    }
+                });
+            }
+            
+            nextButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentStep = this.closest('.form-step').getAttribute('data-step');
+                    const nextStep = this.getAttribute('data-next');
+                    
+                    console.log('Validating step:', currentStep, 'Account type:', userTypeInput.value);
+                    if (validateStep(currentStep)) {
+                        goToStep(nextStep);
+                    }
+                });
+            });
+            
+            prevButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevStep = this.getAttribute('data-prev');
+                    goToStep(prevStep);
+                });
+            });
+            
+            function validateStep(stepNumber) {
+                let isValid = true;
+                
+                if (stepNumber === '1') {
+                    if (!userTypeInput.value) {
+                        alert('Please select an account type');
+                        isValid = false;
+                    }
+                } else if (stepNumber === '2') {
+                    const requiredFields = document.querySelectorAll('.form-step[data-step="2"] [required]');
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value) {
+                            field.style.borderColor = 'var(--danger-color)';
+                            isValid = false;
+                            field.addEventListener('input', function() {
+                                this.style.borderColor = '#ddd';
+                            });
+                        }
+                    });
+                    
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    
+                    if (password !== confirmPassword) {
+                        alert('Passwords do not match');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) {
+                        alert('Please fill in all required fields');
+                    }
+                } else if (stepNumber === '3') {
+                    const bloodGroup = document.getElementById('blood-group').value;
+                    
+                    if (!bloodGroup) {
+                        alert('Please select your blood group');
+                        isValid = false;
+                    }
+                    
+                    if (document.getElementById('organ-donor-yes').checked) {
+                        const consent = document.getElementById('organ-donation-consent');
+                        if (!consent.checked) {
+                            alert('Please consent to organ donation if you wish to be an organ donor');
+                            isValid = false;
+                        }
+                    }
+                }
+                
+                return isValid;
+            }
+            
+            // Check if coming from landing page with type selection
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeParam = urlParams.get('type');
+            
+            if (typeParam) {
+                const typeCard = document.querySelector(`.user-type-card[data-type="${typeParam}"]`);
+                if (typeCard) {
+                    typeCard.click();
+                }
+            }
+});
+    </script>
+</body>
+</html>

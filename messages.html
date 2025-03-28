@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Donation Consultation</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .consultation-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 100, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .header {
+            background-color: #2a5c8d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .consultation-flow {
+            display: flex;
+            min-height: 500px;
+        }
+        
+        .doctor-selection {
+            width: 35%;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .doctor-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-card.selected {
+            border-color: #2a5c8d;
+            background-color: #f0f7ff;
+        }
+        
+        .doctor-card h3 {
+            color: #2a5c8d;
+            margin-bottom: 5px;
+        }
+        
+        .specialty {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+        }
+        
+        .chat-interface {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            background-color: #2a5c8d;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a5c8d;
+            font-weight: bold;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        
+        .received {
+            align-self: flex-start;
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 0 15px 15px 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .sent {
+            align-self: flex-end;
+            background-color: #2a5c8d;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 15px 0 15px 15px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: white;
+            display: flex;
+            position: relative;
+        }
+        
+        .message-counter {
+            position: absolute;
+            top: -22px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: #666;
+            background-color: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+        }
+        
+        .chat-input input:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+        
+        .send-btn {
+            background-color: #2a5c8d;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .info-panel {
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-top: 1px solid #ddd;
+        }
+        
+        .info-panel h3 {
+            color: #a2161a;
+            margin-bottom: 10px;
+        }
+        
+        .info-panel ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .emergency-contact {
+            background-color: #ffecec;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .consultation-flow {
+                flex-direction: column;
+            }
+            
+            .doctor-selection, .chat-interface {
+                width: 100%;
+            }
+            
+            .doctor-selection {
+                max-height: 200px;
+                overflow-y: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="consultation-container">
+        <a href="dashboard.html"><button class="close-btn" onclick="window.close()">✕</button></a>
+        
+        <div class="header">
+            <h1>Donation Process Consultation</h1>
+            <p>Chat with verified medical professionals about organ donation</p>
+        </div>
+        
+        <div class="consultation-flow">
+            <div class="doctor-selection">
+                <div class="doctor-card selected" onclick="selectDoctor(1)">
+                    <h3>Dr. Sarah Johnson</h3>
+                    <p class="specialty">Transplant Surgeon</p>
+                    <p>15 years experience</p>
+                    <span class="badge">Verified</span>
+                </div>
+                
+                <div class="doctor-card" onclick="selectDoctor(2)">
+                    <h3>Dr. Michael Chen</h3>
+                    <p class="specialty">Nephrologist</p>
+                    <p>12 years experience</p>
+                    <span class="badge">Verified</span>
+                </div>
+                
+                <div class="doctor-card" onclick="selectDoctor(3)">
+                    <h3>Dr. Lisa Rodriguez</h3>
+                    <p class="specialty">Transplant Coordinator</p>
+                    <p>8 years experience</p>
+                    <span class="badge">Verified</span>
+                </div>
+                
+                <div class="doctor-card" onclick="selectDoctor(4)">
+                    <h3>Dr. David Wilson</h3>
+                    <p class="specialty">Hematologist</p>
+                    <p>18 years experience</p>
+                    <span class="badge">Verified</span>
+                </div>
+            </div>
+            
+            <div class="chat-interface">
+                <div class="chat-header">
+                    <div class="doctor-avatar">SJ</div>
+                    <div>
+                        <h3>Dr. Sarah Johnson</h3>
+                        <p style="font-size: 0.8rem;">Transplant Surgeon</p>
+                    </div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message received">
+                        <div class="message-content">
+                            Hello! I'm Dr. Johnson. I can answer your questions about organ donation procedures, eligibility, risks, and benefits. What would you like to know?
+                        </div>
+                        <div class="message-time">10:00 AM</div>
+                    </div>
+                    
+                    <div class="message received">
+                        <div class="message-content">
+                            You can ask me up to 10 questions about organ donation. Common questions include: "Am I eligible to donate?", "What's the recovery process like?", or "How does donation affect my health?"
+                        </div>
+                        <div class="message-time">10:01 AM</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <div class="message-counter" id="messageCounter">Messages left: 10</div>
+                    <input type="text" id="messageInput" placeholder="Type your question about donation...">
+                    <button class="send-btn" id="sendButton" onclick="sendMessage()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="info-panel">
+                    <h3>Quick Information</h3>
+                    <ul>
+                        <li>All consultations are confidential</li>
+                        <li>Average response time: 3-5 minutes</li>
+                        <li>Available 8AM-8PM daily</li>
+                    </ul>
+                    <div class="emergency-contact">
+                        For urgent medical matters, please call emergency services immediately.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedDoctorId = 1;
+        let messageCount = 0;
+        const MAX_MESSAGES =3;
+        const conversationContext = [];
+        let currentTopic = null;
+        
+        const doctors = {
+            1: { name: "Dr. Sarah Johnson", specialty: "Transplant Surgeon", initials: "SJ" },
+            2: { name: "Dr. Michael Chen", specialty: "Nephrologist", initials: "MC" },
+            3: { name: "Dr. Lisa Rodriguez", specialty: "Transplant Coordinator", initials: "LR" },
+            4: { name: "Dr. David Wilson", specialty: "Hematologist", initials: "DW" }
+        };
+        
+        // Enhanced medical knowledge base with more specific responses
+        const medicalKnowledge = {
+            kidney: {
+                eligibility: [
+                    "For kidney donation, you need to be in good general health with normal kidney function. We test your GFR (glomerular filtration rate) to confirm this.",
+                    "Kidney donors typically need to be between 18-70 years old, with no history of kidney disease, high blood pressure, or diabetes.",
+                    "Even with some health conditions, you might still be eligible for kidney donation. We evaluate each potential donor individually."
+                ],
+                risks: [
+                    "Kidney donation is very safe, with less than a 1% risk of major complications. The remaining kidney enlarges to compensate.",
+                    "Long-term risks include a slightly higher chance of high blood pressure or protein in urine, but most donors live normal, healthy lives.",
+                    "The surgical risk is similar to other abdominal operations - potential for bleeding, infection, or anesthesia complications."
+                ],
+                process: [
+                    "The kidney donation process includes blood tests, urine tests, CT scan, and meetings with our transplant team over 3-6 months.",
+                    "Kidney donation surgery is typically laparoscopic (minimally invasive) with 3-4 small incisions. Surgery lasts about 3 hours.",
+                    "Living kidney donors are prioritized if they ever need a transplant themselves in the future."
+                ],
+                recovery: [
+                    "Most kidney donors stay in hospital 2-3 days and return to work in 2-4 weeks depending on their job's physical demands.",
+                    "You'll need to avoid heavy lifting for 6 weeks after kidney donation. Full recovery typically takes 6-8 weeks.",
+                    "We provide detailed discharge instructions and schedule follow-up visits at 2 weeks, 6 weeks, 6 months, and 1 year post-donation."
+                ]
+            },
+            liver: {
+                eligibility: [
+                    "Liver donors must be in excellent health, aged 18-55 typically, with compatible blood type and similar body size to the recipient.",
+                    "We evaluate liver donors for any history of liver disease, alcohol abuse, or conditions that might affect liver regeneration.",
+                    "The liver is unique because it can regenerate. A donor's liver regrows to nearly its original size within 6-8 weeks."
+                ],
+                risks: [
+                    "Liver donation carries slightly higher risks than kidney donation, including bile leakage (5-10% chance) that usually resolves on its own.",
+                    "There's a small risk (less than 1%) of life-threatening complications from liver donation surgery.",
+                    "Long-term risks are minimal as the liver fully regenerates. Most donors have normal liver function long-term."
+                ],
+                process: [
+                    "Liver donation evaluation includes blood tests, MRI, and meetings with hepatologists, surgeons, and psychiatrists over 2-4 months.",
+                    "Liver donation surgery takes 4-8 hours. We remove about 40-60% of the liver (right lobe) which regenerates in both donor and recipient.",
+                    "The donor's remaining liver begins regenerating immediately and reaches near-normal size within 2 months."
+                ],
+                recovery: [
+                    "Liver donors typically stay in hospital 5-7 days. Full recovery takes 2-3 months with gradual return to normal activities.",
+                    "You'll need to avoid alcohol for at least 6 months after liver donation to allow complete regeneration.",
+                    "We monitor liver function closely after surgery with blood tests every few days initially, then weekly for the first month."
+                ]
+            },
+            general: {
+                eligibility: [
+                    "Basic eligibility requires being in good health, free from active infections, cancer, and certain chronic diseases.",
+                    "Age limits vary by organ but generally donors are between 18-60 years old. Some exceptions exist for exceptional cases.",
+                    "We evaluate all potential donors thoroughly to ensure donation is safe for both donor and recipient."
+                ],
+                risks: [
+                    "All organ donations carry surgical risks including bleeding, infection, blood clots, and anesthesia complications.",
+                    "Psychological risks include potential regret or emotional distress, though most donors report positive experiences.",
+                    "We provide lifelong follow-up care for all donors to monitor any potential long-term effects."
+                ],
+                process: [
+                    "The donation process includes medical evaluation, informed consent, surgery, and post-operative recovery phases.",
+                    "Evaluation typically takes 2-6 months depending on the organ. This ensures complete safety for the donor.",
+                    "All donors receive comprehensive education about the donation process before making a final decision."
+                ],
+                recovery: [
+                    "Recovery time varies by organ donated but generally ranges from 4 weeks to 3 months for full recovery.",
+                    "All donors receive detailed discharge instructions and have access to our donor support team 24/7.",
+                    "We encourage donors to share their experiences through our donor mentor program if they choose."
+                ],
+                thanks: [
+                    "Thank you for considering organ donation. It's one of the most generous gifts a person can give.",
+                    "We appreciate your questions about donation. It's important to be fully informed before making this decision.",
+                    "Your interest in donation is commendable. Let me know if you have any other questions."
+                ]
+            }
+        };
+        
+        function updateMessageCounter() {
+    const remaining = MAX_MESSAGES - messageCount;
+    document.getElementById('messageCounter').textContent = `Messages left: ${remaining}`;
+
+    if (remaining <= 0) {
+        document.getElementById('messageInput').disabled = true;
+        document.getElementById('messageInput').placeholder = "Message limit reached";
+        document.getElementById('sendButton').disabled = true;
+
+        setTimeout(() => {
+            addMessage("You've reached the 3-message limit for this consultation. Thank you for your questions!", true);
+        }, 1000);
+    }
+}
+
+        
+        function selectDoctor(doctorId) {
+            selectedDoctorId = doctorId;
+            const doctor = doctors[doctorId];
+            
+            // Update UI
+            document.querySelectorAll('.doctor-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update chat header
+            document.querySelector('.doctor-avatar').textContent = doctor.initials;
+            document.querySelector('.chat-header h3').textContent = doctor.name;
+            document.querySelector('.chat-header p').textContent = doctor.specialty;
+            
+            // Add greeting message
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = `
+                <div class="message received">
+                    <div class="message-content">
+                        Hello! I'm ${doctor.name.split('Dr. ')[1]}. As a ${doctor.specialty}, I can answer your questions about organ donation. You have 10 messages remaining in this consultation.
+                    </div>
+                    <div class="message-time">Just now</div>
+                </div>
+            `;
+            
+            // Reset conversation context
+            conversationContext.length = 0;
+            currentTopic = null;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message && messageCount < MAX_MESSAGES) {
+                const chatMessages = document.getElementById('chatMessages');
+                
+                // Add user message
+                chatMessages.innerHTML += `
+                    <div class="message sent">
+                        <div class="message-content">${message}</div>
+                        <div class="message-time">${getCurrentTime()}</div>
+                    </div>
+                `;
+                
+                // Add to conversation context
+                conversationContext.push(message.toLowerCase());
+                
+                input.value = '';
+                messageCount++;
+                updateMessageCounter();
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Simulate doctor typing
+                setTimeout(() => {
+                    const response = generateMedicalResponse(message);
+                    chatMessages.innerHTML += `
+                        <div class="message received">
+                            <div class="message-content">${response}</div>
+                            <div class="message-time">${getCurrentTime()}</div>
+                        </div>
+                    `;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }
+        }
+        
+        function generateMedicalResponse(message) {
+            const lowerMsg = message.toLowerCase();
+            
+            // Check for specific organ mentions
+            const mentionedOrgan = getMentionedOrgan(lowerMsg);
+            
+            // Determine response topic
+            const topic = determineTopic(lowerMsg);
+            
+            // Generate appropriate response
+            if (mentionedOrgan && medicalKnowledge[mentionedOrgan] && medicalKnowledge[mentionedOrgan][topic]) {
+                // Use organ-specific response
+                const responses = medicalKnowledge[mentionedOrgan][topic];
+                currentTopic = {organ: mentionedOrgan, topic: topic};
+                return responses[Math.floor(Math.random() * responses.length)];
+            } 
+            else if (currentTopic && medicalKnowledge[currentTopic.organ] && medicalKnowledge[currentTopic.organ][topic]) {
+                // Continue with current organ context
+                const responses = medicalKnowledge[currentTopic.organ][topic];
+                currentTopic.topic = topic;
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            else if (medicalKnowledge.general[topic]) {
+                // Use general response
+                currentTopic = {organ: 'general', topic: topic};
+                const responses = medicalKnowledge.general[topic];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            else {
+                // Fallback response
+                currentTopic = null;
+                return "That's an important question. Could you tell me more about what specifically you'd like to know?";
+            }
+        }
+        
+        function getMentionedOrgan(message) {
+            if (message.includes('kidney')) return 'kidney';
+            if (message.includes('liver')) return 'liver';
+            if (message.includes('heart')) return 'general';
+            if (message.includes('lung')) return 'general';
+            if (message.includes('organ')) return 'general';
+            return null;
+        }
+        
+        function determineTopic(message) {
+            if (message.includes('eligib') || message.includes('qualif') || message.includes('can i donate')) 
+                return 'eligibility';
+            if (message.includes('risk') || message.includes('danger') || message.includes('safe') || message.includes('complicat')) 
+                return 'risks';
+            if (message.includes('process') || message.includes('procedure') || message.includes('how it works') || message.includes('step')) 
+                return 'process';
+            if (message.includes('recover') || message.includes('heal') || message.includes('after surgery') || message.includes('post-op')) 
+                return 'recovery';
+            if (message.includes('thank') || message.includes('appreciate')) 
+                return 'thanks';
+            return 'general';
+        }
+        
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // Allow Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Initialize message counter
+        updateMessageCounter();
+    </script>
+</body>
+</html>

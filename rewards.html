@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Marketplace | Rewards Center</title>
+    <style>
+        :root {
+            --primary: #e63946;
+            --secondary: #f1faee;
+            --accent: #a8dadc;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .profile-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .user-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+        
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .badge:hover {
+            transform: scale(1.1);
+        }
+        
+        .badge i {
+            font-size: 2rem;
+            color: var(--dark);
+        }
+        
+        .badge.locked {
+            background-color: #e0e0e0;
+        }
+        
+        .badge.locked i {
+            color: #b0b0b0;
+        }
+        
+        .badge-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--dark);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            width: max-content;
+            max-width: 200px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .badge:hover .badge-tooltip {
+            opacity: 1;
+        }
+        
+        .rewards-section {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .reward-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .reward-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .reward-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c1121f;
+        }
+        
+        .btn-disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+        
+        .donation-history {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .level-up {
+            animation: levelUp 1s ease-in-out;
+        }
+        
+        @keyframes levelUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .profile-section {
+                flex-direction: column;
+            }
+            
+            .user-card {
+                min-width: 100%;
+            }
+            
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Healthcare Marketplace</h1>
+        <p>Rewards Center - Earn points for saving lives</p>
+    </header>
+    
+    <div class="container">
+        <section class="profile-section">
+            <div class="user-card">
+                <div class="user-avatar" id="user-avatar">JD</div>
+                <h2 id="username">John Doe</h2>
+                <p>Blood Donor | Organ Donor</p>
+                
+                <div class="progress-container">
+                    <h3>Your Donor Level</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="level-progress"></div>
+                    </div>
+                    <p>Level <span id="current-level">3</span> (<span id="current-points">750</span>/<span id="next-level-points">1000</span> points)</p>
+                </div>
+                
+                <div>
+                    <h3>Total Points</h3>
+                    <p id="total-points">750</p>
+                </div>
+            </div>
+            
+            <div class="user-card">
+                <h2>Your Badges</h2>
+                <p>Earn badges by reaching donation milestones</p>
+                
+                <div class="badges-container">
+                    <div class="badge">
+                        <i class="fas fa-tint"></i>
+                        <div class="badge-tooltip">First Blood - Donated blood for the first time</div>
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-medal"></i>
+                        <div class="badge-tooltip">Bronze Donor - 5 donations</div>
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-medal" style="color: silver;"></i>
+                        <div class="badge-tooltip">Silver Donor - 10 donations</div>
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-heart"></i>
+                        <div class="badge-tooltip">Life Saver - Participated in emergency donation</div>
+                    </div>
+                    <div class="badge locked">
+                        <i class="fas fa-medal" style="color: gold;"></i>
+                        <div class="badge-tooltip">Gold Donor - 25 donations (Locked)</div>
+                    </div>
+                    <div class="badge locked">
+                        <i class="fas fa-gem"></i>
+                        <div class="badge-tooltip">Diamond Donor - 50 donations (Locked)</div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="view-all-badges" style="margin-top: 1.5rem;">View All Badges</button>
+            </div>
+        </section>
+        
+        <section class="rewards-section">
+            <h2>Redeem Your Points</h2>
+            <p>Thank you for your donations! Redeem your points for these rewards:</p>
+            
+            <div class="rewards-grid">
+                <div class="reward-card">
+                    <img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Thank You Kit">
+                    <h3>Thank You Kit</h3>
+                    <p>50 points</p>
+                    <p>Includes certificate and donor appreciation items</p>
+                    <button class="btn redeem-btn" data-cost="50" data-reward="Thank You Kit">Redeem</button>
+                </div>
+                
+                <div class="reward-card">
+                    <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Health Checkup">
+                    <h3>Basic Health Checkup</h3>
+                    <p>200 points</p>
+                    <p>Free basic health screening at partnered clinics</p>
+                    <button class="btn redeem-btn" data-cost="200" data-reward="Basic Health Checkup">Redeem</button>
+                </div>
+                
+                <div class="reward-card">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Gift Card">
+                    <h3>$20 Gift Card</h3>
+                    <p>300 points</p>
+                    <p>Choose from popular retailers</p>
+                    <button class="btn redeem-btn" data-cost="300" data-reward="$20 Gift Card">Redeem</button>
+                </div>
+                
+                <div class="reward-card">
+                    <img src="https://images.unsplash.com/photo-1543357480-c60d400e2ef9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Premium Health Package">
+                    <h3>Premium Health Package</h3>
+                    <p>1000 points</p>
+                    <p>Comprehensive health screening and consultation</p>
+                    <button class="btn redeem-btn" data-cost="1000" data-reward="Premium Health Package">Redeem</button>
+                </div>
+            </div>
+        </section>
+        
+        <section class="donation-history">
+            <h2>Your Donation History</h2>
+            <p>Track your life-saving contributions</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Points Earned</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="donation-history">
+                    <!-- Filled by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </div>
+    
+    <div class="modal" id="reward-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Reward Redeemed!</h2>
+            <p id="modal-message">You have successfully redeemed the Thank You Kit for 50 points.</p>
+            <div id="level-up-message" style="display: none; color: var(--primary); font-weight: bold; margin: 1rem 0;">
+                <i class="fas fa-trophy"></i> Congratulations! You've reached Level <span id="new-level">4</span>!
+            </div>
+            <button class="btn" id="close-modal-btn">Close</button>
+        </div>
+    </div>
+    
+    <div class="modal" id="badges-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>All Badges</h2>
+            <div class="badges-container" style="justify-content: center; margin-top: 1rem;">
+                <!-- All badges will be displayed here -->
+            </div>
+            <button class="btn" id="close-badges-modal" style="margin-top: 1.5rem;">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // User data
+            const user = {
+                name: "John Doe",
+                points: 750,
+                level: 3,
+                levelPoints: 750,
+                nextLevelPoints: 1000,
+                donations: [
+                    { date: "2023-05-15", type: "Blood", points: 50, status: "Completed" },
+                    { date: "2023-04-10", type: "Blood", points: 50, status: "Completed" },
+                    { date: "2023-03-22", type: "Plasma", points: 75, status: "Completed" },
+                    { date: "2023-02-18", type: "Blood", points: 50, status: "Completed" },
+                    { date: "2023-01-05", type: "Organ Pledge", points: 500, status: "Registered" },
+                    { date: "2022-12-12", type: "Blood", points: 50, status: "Completed" },
+                    { date: "2022-11-08", type: "Platelets", points: 75, status: "Completed" }
+                ]
+            };
+            
+            // All badges data
+            const allBadges = [
+                { icon: "fas fa-tint", name: "First Blood", description: "Donated blood for the first time", earned: true },
+                { icon: "fas fa-medal", name: "Bronze Donor", description: "5 donations", earned: true },
+                { icon: "fas fa-medal", name: "Silver Donor", description: "10 donations", earned: true, style: "color: silver;" },
+                { icon: "fas fa-heart", name: "Life Saver", description: "Participated in emergency donation", earned: true },
+                { icon: "fas fa-medal", name: "Gold Donor", description: "25 donations", earned: false, style: "color: gold;" },
+                { icon: "fas fa-gem", name: "Diamond Donor", description: "50 donations", earned: false },
+                { icon: "fas fa-certificate", name: "Organ Hero", description: "Registered as an organ donor", earned: false },
+                { icon: "fas fa-star", name: "Plasma Pioneer", description: "5 plasma donations", earned: false },
+                { icon: "fas fa-shield-alt", name: "Platelet Protector", description: "5 platelet donations", earned: false },
+                { icon: "fas fa-trophy", name: "Century Club", description: "100 donations", earned: false },
+                { icon: "fas fa-ribbon", name: "Community Champion", description: "Referred 5 new donors", earned: false },
+                { icon: "fas fa-award", name: "All-Star Donor", description: "Donated all types (blood, plasma, platelets)", earned: false }
+            ];
+            
+            // Initialize the page
+            function initPage() {
+                // Set user info
+                document.getElementById('username').textContent = user.name;
+                document.getElementById('user-avatar').textContent = user.name.split(' ').map(n => n[0]).join('');
+                document.getElementById('total-points').textContent = user.points;
+                document.getElementById('current-level').textContent = user.level;
+                document.getElementById('current-points').textContent = user.levelPoints;
+                document.getElementById('next-level-points').textContent = user.nextLevelPoints;
+                
+                // Update progress bar
+                updateProgressBar();
+                
+                // Populate donation history
+                const historyTable = document.getElementById('donation-history');
+                user.donations.forEach(donation => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${donation.date}</td>
+                        <td>${donation.type}</td>
+                        <td>+${donation.points}</td>
+                        <td>${donation.status}</td>
+                    `;
+                    historyTable.appendChild(row);
+                });
+                
+                // Set up redeem buttons
+                document.querySelectorAll('.redeem-btn').forEach(btn => {
+                    const cost = parseInt(btn.dataset.cost);
+                    if (user.points < cost) {
+                        btn.classList.add('btn-disabled');
+                        btn.disabled = true;
+                    }
+                    
+                    btn.addEventListener('click', function() {
+                        if (user.points >= cost) {
+                            // Deduct points
+                            user.points -= cost;
+                            document.getElementById('total-points').textContent = user.points;
+                            
+                            // Check for level up
+                            const didLevelUp = checkForLevelUp();
+                            
+                            // Update modal content
+                            document.getElementById('modal-title').textContent = 'Reward Redeemed!';
+                            document.getElementById('modal-message').textContent = 
+                                `You have successfully redeemed the ${btn.dataset.reward} for ${cost} points.`;
+                            
+                            // Show level up message if applicable
+                            const levelUpMessage = document.getElementById('level-up-message');
+                            if (didLevelUp) {
+                                levelUpMessage.style.display = 'block';
+                                document.getElementById('new-level').textContent = user.level;
+                            } else {
+                                levelUpMessage.style.display = 'none';
+                            }
+                            
+                            // Show modal
+                            document.getElementById('reward-modal').style.display = 'flex';
+                            
+                            // Disable button if user doesn't have enough points now
+                            if (user.points < cost) {
+                                btn.classList.add('btn-disabled');
+                                btn.disabled = true;
+                            }
+                            
+                            // Disable other buttons that are now too expensive
+                            document.querySelectorAll('.redeem-btn').forEach(otherBtn => {
+                                const otherCost = parseInt(otherBtn.dataset.cost);
+                                if (user.points < otherCost) {
+                                    otherBtn.classList.add('btn-disabled');
+                                    otherBtn.disabled = true;
+                                }
+                            });
+                        }
+                    });
+                });
+                
+                // Set up badges modal
+                document.getElementById('view-all-badges').addEventListener('click', function() {
+                    const badgesContainer = document.querySelector('#badges-modal .badges-container');
+                    badgesContainer.innerHTML = '';
+                    
+                    allBadges.forEach(badge => {
+                        const badgeElement = document.createElement('div');
+                        badgeElement.className = `badge ${badge.earned ? '' : 'locked'}`;
+                        
+                        badgeElement.innerHTML = `
+                            <i class="${badge.icon}" ${badge.style || ''}></i>
+                            <div class="badge-tooltip">
+                                <strong>${badge.name}</strong><br>
+                                ${badge.description}<br>
+                                ${badge.earned ? 'Earned!' : 'Not earned yet'}
+                            </div>
+                        `;
+                        
+                        badgesContainer.appendChild(badgeElement);
+                    });
+                    
+                    document.getElementById('badges-modal').style.display = 'flex';
+                });
+                
+                // Close modals
+                document.querySelectorAll('.close-modal, #close-modal-btn, #close-badges-modal').forEach(element => {
+                    element.addEventListener('click', function() {
+                        document.querySelectorAll('.modal').forEach(modal => {
+                            modal.style.display = 'none';
+                        });
+                    });
+                });
+                
+                // Close modal when clicking outside
+                window.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('modal')) {
+                        event.target.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Update progress bar based on current points
+            function updateProgressBar() {
+                const progressPercentage = (user.levelPoints / user.nextLevelPoints) * 100;
+                document.getElementById('level-progress').style.width = `${progressPercentage}%`;
+                document.getElementById('current-points').textContent = user.levelPoints;
+                document.getElementById('next-level-points').textContent = user.nextLevelPoints;
+            }
+            
+            // Check if user has enough points to level up
+            function checkForLevelUp() {
+                let leveledUp = false;
+                
+                // Simple leveling system - each level requires 1000 points more than the last
+                while (user.levelPoints >= user.nextLevelPoints) {
+                    user.level++;
+                    user.levelPoints -= user.nextLevelPoints;
+                    user.nextLevelPoints = 1000 * (user.level + 1);
+                    leveledUp = true;
+                    
+                    // Animate level up
+                    const levelElement = document.getElementById('current-level');
+                    levelElement.textContent = user.level;
+                    levelElement.classList.add('level-up');
+                    setTimeout(() => {
+                        levelElement.classList.remove('level-up');
+                    }, 1000);
+                }
+                
+                // Update progress bar
+                updateProgressBar();
+                
+                return leveledUp;
+            }
+            
+            initPage();
+        });
+    </script>
+</body>
+</html>

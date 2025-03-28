@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DonorConnect - Connecting Blood and Organ Donors with Recipients</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style2.css">
+</head>
+<style>
+    /* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: var(--light-color);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--dark-color);
+    text-align: center;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: var(--gray-color);
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* Landing Page Styles */
+.landing-page {
+    padding: 80px 0;
+    background-color: var(--white);
+}
+
+.landing-layout {
+    display: flex;
+    gap: 0; /* Remove gap to make room for the divider */
+    margin-top: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.landing-box {
+    flex: 1;
+    height: 400px; /* Adjust height as needed */
+    background-color: var(--light-color);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.landing-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.landing-box.left-box {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('qna-bg.jpg'); /* Add a background image */
+    background-size: cover;
+    background-position: center;
+    color: var(--white);
+}
+
+.landing-box.right-box {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('comments-bg.jpg'); /* Add a background image */
+    background-size: cover;
+    background-position: center;
+    color: var(--white);
+}
+
+.box-content {
+    z-index: 1;
+    max-width: 80%; /* Ensure text doesn't overflow */
+}
+
+.box-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.box-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* Divider Styles */
+.divider {
+    width: 1px;
+    height: 300px; /* Adjust height to match the boxes */
+    background-color: rgba(255, 255, 255, 0.3); /* Light divider color */
+    margin: 0 20px; /* Space between boxes and divider */
+}
+
+@media (max-width: 768px) {
+    .landing-layout {
+        flex-direction: column;
+    }
+
+    .landing-box {
+        height: 300px; /* Adjust height for smaller screens */
+        width: 100%; /* Full width on smaller screens */
+    }
+
+    .divider {
+        width: 80%; /* Horizontal divider on smaller screens */
+        height: 1px;
+        margin: 20px 0; /* Space between boxes and divider */
+    }
+}
+</style>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="DonorConnect Logo">
+                <span>DonorConnect</span>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="community.html">Community</a></li>
+
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+        <section class="landing-page">
+            <div class="container">
+                <h1 class="section-title">Welcome to the Community Forum</h1>
+                <p class="section-subtitle">Choose a section to get started.</p>
+    
+                <div class="landing-layout">
+                    <!-- Left Box: Q&A -->
+                    <div class="landing-box left-box" onclick="window.location.href='qna.html'">
+                        <div class="box-content">
+                            <h2>Q&A Forum</h2>
+                            <p>Ask questions and get answers from the community.</p>
+                        </div>
+                    </div>
+    
+                    <!-- Divider -->
+                    <div class="divider"></div>
+    
+                    <!-- Right Box: Comments -->
+                    <div class="landing-box right-box" onclick="window.location.href='comments.html'">
+                        <div class="box-content">
+                            <h2>Comment Section</h2>
+                            <p>Share your thoughts and engage with others.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <img src="images/logo.png" alt="DonorConnect Logo">
+                        <span>DonorConnect</span>
+                    </div>
+                    <p>Connecting blood and organ donors with recipients to save lives through secure and efficient technology.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="community.html">Community</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul> 
+                </div>
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blood Donation Guide</a></li>
+                        <li><a href="#">Organ Donation FAQs</a></li>
+                        <li><a href="#">Eligibility Criteria</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Health Street, Mumbai, India</li>
+                        <li><i class="fas fa-phone"></i> +91 9876543210</li>
+                        <li><i class="fas fa-envelope"></i> info@donorconnect.org</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DonorConnect. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+  
+    <script src="script2.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

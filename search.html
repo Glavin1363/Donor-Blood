@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Donors | DonorConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --primary-dark: #c1121f;
+            --secondary-color: #f1faee;
+            --dark-color: #1d3557;
+            --light-color: #a8dadc;
+            --success-color: #2a9d8f;
+            --danger-color: #e63946;
+            --white: #ffffff;
+            --gray-color: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-menu {
+            display: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .search-container {
+            display: flex;
+            min-height: calc(100vh - 70px);
+            margin-top: 70px;
+        }
+        
+        .search-sidebar {
+            width: 300px;
+            background-color: var(--white);
+            padding: 30px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .filter-group {
+            margin-bottom: 25px;
+        }
+        
+        .filter-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .filter-option input {
+            margin-right: 10px;
+        }
+        
+        .filter-option label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .distance-slider {
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        .distance-value {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .search-results {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--light-color);
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-header h1 {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+        }
+        
+        .search-sort {
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-sort label {
+            margin-right: 10px;
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .search-sort select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .donor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .donor-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .donor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .donor-card-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .donor-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .donor-name {
+            flex: 1;
+        }
+        
+        .donor-name h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .donor-name p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .donor-blood {
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .donor-card-body {
+            padding: 20px;
+        }
+        
+        .donor-info-item {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .donor-info-item i {
+            width: 20px;
+            color: var(--primary-color);
+            margin-right: 10px;
+            text-align: center;
+        }
+        
+        .donor-info-item span {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+        }
+        
+        .donor-card-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .donor-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-dot.available {
+            background-color: var(--success-color);
+        }
+        
+        .status-dot.unavailable {
+            background-color: var(--danger-color);
+        }
+        
+        .status-text {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        
+        .pagination a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            margin: 0 5px;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .mobile-filter-toggle {
+            display: none;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .mobile-filter-toggle i {
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 992px) {
+            .search-sidebar {
+                position: fixed;
+                left: -300px;
+                top: 70px;
+                bottom: 0;
+                z-index: 999;
+                transition: left 0.3s ease;
+            }
+            
+            .search-sidebar.active {
+                left: 0;
+            }
+            
+            .search-results {
+                margin-left: 0;
+            }
+            
+            .mobile-filter-toggle {
+                display: flex;
+                align-items: center;
+            }
+
+            .navbar {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background-color: var(--primary-color);
+                padding: 20px 0;
+                transition: left 0.3s ease;
+            }
+
+            .navbar.active {
+                left: 0;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .donor-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-sort {
+                margin-top: 15px;
+                width: 100%;
+            }
+            
+            .search-sort select {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>DonorConnect</span>
+            </a>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="register.html">Register</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu" id="mobileMenu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-container">
+        <div class="search-sidebar" id="searchSidebar">
+            <h2>Filter Donors</h2>
+            
+            <div class="filter-group">
+                <h3>Donation Type</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-donation" checked>
+                        <label for="blood-donation">Blood Donation</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-donation">
+                        <label for="organ-donation">Organ Donation</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Blood Group</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-a-plus" checked>
+                        <label for="blood-a-plus">A+</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-a-minus">
+                        <label for="blood-a-minus">A-</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-b-plus">
+                        <label for="blood-b-plus">B+</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-b-minus">
+                        <label for="blood-b-minus">B-</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-ab-plus">
+                        <label for="blood-ab-plus">AB+</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-ab-minus">
+                        <label for="blood-ab-minus">AB-</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-o-plus">
+                        <label for="blood-o-plus">O+</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="blood-o-minus">
+                        <label for="blood-o-minus">O-</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Organ Type (if applicable)</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-kidney">
+                        <label for="organ-kidney">Kidney</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-liver">
+                        <label for="organ-liver">Liver</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-heart">
+                        <label for="organ-heart">Heart</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-lungs">
+                        <label for="organ-lungs">Lungs</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="organ-pancreas">
+                        <label for="organ-pancreas">Pancreas</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Distance</h3>
+                <input type="range" min="1" max="100" value="50" class="distance-slider" id="distanceSlider">
+                <div class="distance-value" id="distanceValue">Within 50 km</div>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Availability</h3>
+                <div class="filter-options">
+                    <div class="filter-option">
+                        <input type="checkbox" id="available-now" checked>
+                        <label for="available-now">Available Now</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="available-week">
+                        <label for="available-week">Available This Week</label>
+                    </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="available-month">
+                        <label for="available-month">Available This Month</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            
+            <button class="btn btn-outline" style="width: 100%; margin-top: 10px;">
+                <i class="fas fa-redo"></i> Reset Filters
+            </button>
+        </div>
+        
+        <div class="search-results">
+            <button class="mobile-filter-toggle" id="filterToggle">
+                <i class="fas fa-filter"></i> Filter Donors
+            </button>
+            
+            <div class="search-header">
+                <h1>Available Donors</h1>
+                <div class="search-sort">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="distance">Distance</option>
+                        <option value="recent">Most Recent</option>
+                        <option value="compatibility">Compatibility</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="donor-grid">
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">AM</div>
+                        <div class="donor-name">
+                            <h3>Amit Mishra</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 3 months ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>2.5 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Apollo Hospital</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot available"></div>
+                            <span class="status-text">Available now</span>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">SK</div>
+                        <div class="donor-name">
+                            <h3>Sunita Kumar</h3>
+                            <p>Thane, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 5 months ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>8 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Fortis Hospital</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot available"></div>
+                            <span class="status-text">Available now</span>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">RJ</div>
+                        <div class="donor-name">
+                            <h3>Rajesh Joshi</h3>
+                            <p>Navi Mumbai, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 1 month ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>12 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Lilavati Hospital</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot unavailable"></div>
+                            <span class="status-text">Available next week</span>
+                        </div>
+                        <button class="btn btn-outline" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">PK</div>
+                        <div class="donor-name">
+                            <h3>Priya Khanna</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 2 months ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>5 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Kokilaben Hospital</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot available"></div>
+                            <span class="status-text">Available now</span>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">VS</div>
+                        <div class="donor-name">
+                            <h3>Vikram Singh</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 4 months ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>7 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Tata Memorial</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot unavailable"></div>
+                            <span class="status-text">Available in 2 weeks</span>
+                        </div>
+                        <button class="btn btn-outline" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="donor-card">
+                    <div class="donor-card-header">
+                        <div class="donor-avatar">NM</div>
+                        <div class="donor-name">
+                            <h3>Neha Mehta</h3>
+                            <p>Mumbai, India</p>
+                        </div>
+                        <div class="donor-blood">A+</div>
+                    </div>
+                    <div class="donor-card-body">
+                        <div class="donor-info-item">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Last donated 6 weeks ago</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>3 km away from you</span>
+                        </div>
+                        <div class="donor-info-item">
+                            <i class="fas fa-stethoscope"></i>
+                            <span>Verified by Nanavati Hospital</span>
+                        </div>
+                    </div>
+                    <div class="donor-card-footer">
+                        <div class="donor-status">
+                            <div class="status-dot available"></div>
+                            <span class="status-text">Available now</span>
+                        </div>
+                        <button class="btn btn-primary" style="padding: 8px 15px;">
+                            <i class="fas fa-envelope"></i> Request
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pagination">
+                <a href="#" class="active">1</a>
+                <a href="#">2</a>
+                <a href="#">3</a>
+                <a href="#"><i class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenu');
+            constnavbar = document.querySelector('.navbar');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navbar.classList.toggle('active');
+            });
+            
+            // Filter sidebar toggle for mobile
+            const filterToggle = document.getElementById('filterToggle');
+            const searchSidebar = document.getElementById('searchSidebar');
+            
+            filterToggle.addEventListener('click', function() {
+                searchSidebar.classList.toggle('active');
+            });
+            
+            // Distance slider update
+            const distanceSlider = document.getElementById('distanceSlider');
+            const distanceValue = document.getElementById('distanceValue');
+    
+            if (distanceSlider && distanceValue) {
+                distanceSlider.addEventListener('input', function() {
+                    distanceValue.textContent = `Within ${this.value} km`;
+                });
+            }
+    
+            // Request button functionality
+            const requestButtons = document.querySelectorAll('.donor-card-footer .btn');
+    
+            requestButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const donorCard = this.closest('.donor-card');
+                    if (donorCard) {
+                        const donorNameElement = donorCard.querySelector('.donor-name h3');
+                        if (donorNameElement) {
+                            const donorName = donorNameElement.textContent;
+                            alert(`Request sent to ${donorName}. They will contact you shortly.`);
+                        }
+                    }
+                });
+            });
+    
+            // Close mobile menu when clicking on a link
+            const navLinks = document.querySelectorAll('.navbar a');
+            const navbar = document.querySelector('.navbar');
+    
+            if (navbar) {
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        navbar.classList.remove('active');
+                    });
+                });
+            }
+        }); // This was the missing closing parenthesis
+    </script>
+    </body>
+    </html>
