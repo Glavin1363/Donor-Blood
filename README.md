@@ -136,5 +136,4 @@ DonorConnect is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 For questions or issues, feel free to reach out:
 
 - Email: glavindmello@gmail.com
-- GitHub Issues: [Open an Issue](https://github.com/Glavin1363/DonorConnect/issues)
 
