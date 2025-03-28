@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DonorConnect | Donation Readiness Checklist</title>
+    <style>
+        :root {
+            --primary: #e63946;
+            --secondary: #f1faee;
+            --dark: #1d3557;
+            --light: #a8dadc;
+            --success: #2a9d8f;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .donor-connect-container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .checklist-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .checklist-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .checklist-header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .checklist-body {
+            padding: 20px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .check-icon.pending {
+            background-color: #f0f0f0;
+            color: #999;
+        }
+        
+        .check-icon.ready {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .check-icon.unready {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .check-text {
+            flex-grow: 1;
+        }
+        
+        .check-text h4 {
+            margin: 0 0 4px;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        .check-text p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .input-group {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-field label {
+            font-size: 0.85rem;
+            color: var(--dark);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .input-field input, .input-field select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .checklist-footer {
+            padding: 15px 20px;
+            background-color: var(--secondary);
+            text-align: center;
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status-ready {
+            background-color: #e8f5e9;
+            color: var(--success);
+            display: block;
+        }
+        
+        .status-not-ready {
+            background-color: #ffebee;
+            color: #c62828;
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .last-donation-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .last-donation-group input {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="donor-connect-container">
+        <div class="checklist-header">
+            <h2>Donation Readiness Checklist</h2>
+            <p>Complete your profile to check eligibility for donation</p>
+        </div>
+        
+        <div class="checklist-body">
+            <div class="input-group">
+                <div class="input-field">
+                    <label for="donationType">Donation Type</label>
+                    <select id="donationType">
+                        <option value="blood">Whole Blood</option>
+                        <option value="plasma">Plasma</option>
+                        <option value="platelets">Platelets</option>
+                        <option value="organ">Organ (Kidney)</option>
+                    </select>
+                </div>
+                
+                <div class="last-donation-group">
+                    <div class="input-field" style="flex-grow: 1;">
+                        <label for="lastDonation">Last Donation Date</label>
+                        <input type="date" id="lastDonation">
+                    </div>
+                    <div class="input-field" style="width: 80px;">
+                        <label for="donationCount">Total Donations</label>
+                        <input type="number" id="donationCount" min="0" value="0">
+                    </div>
+                </div>
+                
+                <div class="input-field">
+                    <label for="weight">Your Weight (kg)</label>
+                    <input type="number" id="weight" min="30" max="200" placeholder="Enter weight in kg">
+                </div>
+                
+                <div class="input-field">
+                    <label for="age">Your Age</label>
+                    <input type="number" id="age" min="16" max="80" placeholder="Enter your age">
+                </div>
+                
+                <div class="input-field">
+                    <label for="healthConditions">Any health conditions? (Optional)</label>
+                    <select id="healthConditions">
+                        <option value="none">No known conditions</option>
+                        <option value="diabetes">Diabetes</option>
+                        <option value="hypertension">Hypertension</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress" id="readinessProgress"></div>
+            </div>
+            
+            <div id="checklistItems">
+                <!-- Checklist items will be generated here -->
+            </div>
+            
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+        
+        <div class="checklist-footer">
+            <p>Thank you for considering donation through DonorConnect</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all input elements
+            const donationType = document.getElementById('donationType');
+            const lastDonation = document.getElementById('lastDonation');
+            const donationCount = document.getElementById('donationCount');
+            const weight = document.getElementById('weight');
+            const age = document.getElementById('age');
+            const healthConditions = document.getElementById('healthConditions');
+            const checklistItems = document.getElementById('checklistItems');
+            const statusMessage = document.getElementById('statusMessage');
+            const readinessProgress = document.getElementById('readinessProgress');
+            
+            // Set default date to today
+            const today = new Date();
+            lastDonation.valueAsDate = today;
+            
+            // Add event listeners to all inputs
+            [donationType, lastDonation, donationCount, weight, age, healthConditions].forEach(input => {
+                input.addEventListener('change', updateChecklist);
+                input.addEventListener('input', updateChecklist);
+            });
+            
+            // Initial update
+            updateChecklist();
+            
+            function updateChecklist() {
+                // Get all values
+                const type = donationType.value;
+                const lastDonationDate = new Date(lastDonation.value);
+                const today = new Date();
+                const daysSinceDonation = Math.floor((today - lastDonationDate) / (1000 * 60 * 60 * 24));
+                const weightValue = parseFloat(weight.value) || 0;
+                const ageValue = parseInt(age.value) || 0;
+                const healthCondition = healthConditions.value;
+                const totalDonations = parseInt(donationCount.value) || 0;
+                
+                // Determine requirements based on donation type
+                let minWeight, minAge, maxAge, minDaysBetweenDonations, maxDonations;
+                
+                if (type === 'blood') {
+                    minWeight = 50;
+                    minAge = 18;
+                    maxAge = 65;
+                    minDaysBetweenDonations = 56;
+                    maxDonations = Infinity;
+                } else if (type === 'plasma') {
+                    minWeight = 50;
+                    minAge = 18;
+                    maxAge = 70;
+                    minDaysBetweenDonations = 28;
+                    maxDonations = Infinity;
+                } else if (type === 'platelets') {
+                    minWeight = 50;
+                    minAge = 18;
+                    maxAge = 70;
+                    minDaysBetweenDonations = 7;
+                    maxDonations = 24; // per year
+                } else if (type === 'organ') {
+                    minWeight = 50;
+                    minAge = 18;
+                    maxAge = 60;
+                    minDaysBetweenDonations = 0; // N/A for organs
+                    maxDonations = 1; // for kidney
+                }
+                
+                // Check each condition
+                const conditions = [
+                    {
+                        title: "Weight Requirement",
+                        description: `Weight should be at least ${minWeight}kg`,
+                        check: weightValue >= minWeight
+                    },
+                    {
+                        title: "Age Requirement",
+                        description: `Age should be between ${minAge} and ${maxAge} years`,
+                        check: ageValue >= minAge && ageValue <= maxAge
+                    },
+                    {
+                        title: "Donation Frequency",
+                        description: type === 'organ' ? 
+                            "Organ donation has special requirements" : 
+                            `At least ${minDaysBetweenDonations} days since last donation`,
+                        check: type === 'organ' ? true : daysSinceDonation >= minDaysBetweenDonations
+                    },
+                    {
+                        title: "Total Donations",
+                        description: type === 'organ' ? 
+                            "Organ donation is typically once" : 
+                            `Within allowed donation limits (${maxDonations === Infinity ? 'no limit' : maxDonations + ' max'})`,
+                        check: type === 'organ' ? totalDonations < 1 : totalDonations < maxDonations
+                    },
+                    {
+                        title: "Health Status",
+                        description: "No conditions that prevent donation",
+                        check: healthCondition === 'none' || 
+                               (type !== 'organ' && (healthCondition === 'diabetes' || healthCondition === 'hypertension'))
+                    }
+                ];
+                
+                // Calculate readiness percentage
+                const readyCount = conditions.filter(c => c.check).length;
+                const readinessPercentage = (readyCount / conditions.length) * 100;
+                readinessProgress.style.width = `${readinessPercentage}%`;
+                
+                // Generate checklist items
+                checklistItems.innerHTML = '';
+                conditions.forEach(condition => {
+                    const item = document.createElement('div');
+                    item.className = 'checklist-item';
+                    
+                    const icon = document.createElement('div');
+                    icon.className = `check-icon ${condition.check ? 'ready' : 'unready'}`;
+                    icon.innerHTML = condition.check ? '✓' : '✕';
+                    
+                    const text = document.createElement('div');
+                    text.className = 'check-text';
+                    
+                    const title = document.createElement('h4');
+                    title.textContent = condition.title;
+                    
+                    const desc = document.createElement('p');
+                    desc.textContent = condition.description;
+                    
+                    text.appendChild(title);
+                    text.appendChild(desc);
+                    item.appendChild(icon);
+                    item.appendChild(text);
+                    checklistItems.appendChild(item);
+                });
+                
+                // Update status message
+                statusMessage.className = 'status-message';
+                if (readinessPercentage === 100) {
+                    statusMessage.textContent = 'You meet all requirements! You are ready to donate.';
+                    statusMessage.classList.add('status-ready');
+                } else {
+                    statusMessage.textContent = `You meet ${readyCount} of ${conditions.length} requirements. Please check the items above.`;
+                    statusMessage.classList.add('status-not-ready');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
